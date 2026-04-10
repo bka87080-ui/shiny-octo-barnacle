@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أنمي هاب - حلقات وأخبار الأنمي</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', system-ui, sans-serif; }
+        .card-hover { transition: all 0.3s; }
+        .card-hover:hover { transform: scale(1.05); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+        .hero-bg { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://picsum.photos/id/1015/1920/1080') center/cover no-repeat; }
+    </style>
+</head>
+<body class="bg-zinc-950 text-white">
+    <!-- Navbar -->
+    <nav class="bg-black border-b border-red-600 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-dragon text-4xl text-red-600"></i>
+                <h1 class="text-3xl font-bold">أنمي هاب</h1>
+            </div>
+            <div class="flex gap-8 text-lg">
+                <a href="#" class="hover:text-red-500">الرئيسية</a>
+                <a href="#episodes" class="hover:text-red-500">الحلقات</a>
+                <a href="#news" class="hover:text-red-500">الأخبار</a>
+                <a href="#" class="hover:text-red-500">الأنميات</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <input id="search" type="text" placeholder="ابحث عن أنمي أو حلقة..." 
+                       class="bg-zinc-900 px-4 py-2 rounded-full w-80 focus:outline-none focus:ring-2 focus:ring-red-600">
+                <button onclick="fakeLogin()" class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-full flex items-center gap-2">
+                    <i class="fa-solid fa-user"></i> دخول
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero-bg h-screen flex items-center">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h2 class="text-6xl font-bold mb-4">أحدث حلقات الأنمي مباشرة</h2>
+            <p class="text-2xl mb-8">شاهد ون بيس 1120 • جوجوتسو كايسن 47 • وأكثر</p>
+            <button onclick="watchRandom()" 
+                    class="bg-red-600 hover:bg-red-700 text-xl px-10 py-4 rounded-2xl flex items-center gap-3 mx-auto">
+                <i class="fa-solid fa-play"></i> شاهد الآن
+            </button>
+        </div>
+    </section>
+
+    <!-- Episodes Section -->
+    <section id="episodes" class="max-w-7xl mx-auto px-6 py-16">
+        <h2 class="text-4xl font-bold mb-8 flex items-center gap-3"><i class="fa-solid fa-film text-red-600"></i> الحلقات الجديدة</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6" id="episodes-grid">
+            <!-- JS will fill -->
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section id="news" class="bg-zinc-900 py-16">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-4xl font-bold mb-8 flex items-center gap-3"><i class="fa-solid fa-newspaper text-red-600"></i> أخبار الأنمي</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="news-grid">
+                <!-- JS will fill -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black py-12 border-t border-red-600">
+        <div class="max-w-7xl mx-auto px-6 text-center text-zinc-400">
+            <p>© 2026 أنمي هاب - موقع تجريبي كامل (HTML + Tailwind + JS)</p>
+            <p class="text-xs mt-2">البيانات وهمية للعرض فقط • يمكنك تعديلها بسهولة</p>
+        </div>
+    </footer>
+
+    <!-- Watch Modal -->
+    <div id="modal" onclick="if(event.target===this)hideModal()" class="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
+        <div class="max-w-4xl w-full mx-4 bg-zinc-900 rounded-3xl overflow-hidden">
+            <div class="aspect-video bg-black flex items-center justify-center">
+                <div class="text-center">
+                    <i class="fa-solid fa-play-circle text-8xl text-red-600 mb-4"></i>
+                    <h3 id="modal-title" class="text-3xl"></h3>
+                    <p id="modal-ep" class="text-xl text-zinc-400 mt-2"></p>
+                    <div class="mt-8 text-amber-400">فيديو تجريبي - يمكنك استبداله بـ iframe حقيقي</div>
+                </div>
+            </div>
+            <div class="p-6 flex justify-end">
+                <button onclick="hideModal()" class="px-8 py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tailwind script
+        function initTailwind() {
+            tailwind.config = { content: ["*"], theme: { extend: {} } }
+        }
+
+        // Sample episodes data
+        const episodes = [
+            { id:1, title:"ون بيس", ep:"الحلقة 1120", img:"https://picsum.photos/id/1015/300/400", date:"اليوم" },
+            { id:2, title:"جوجوتسو كايسن", ep:"الحلقة 47", img:"https://picsum.photos/id/201/300/400", date:"أمس" },
+            { id:3, title:"سليبي هولو", ep:"الحلقة 12", img:"https://picsum.photos/id/301/300/400", date:"اليوم" },
+            { id:4, title:"فريرين", ep:"الحلقة 28", img:"https://picsum.photos/id/401/300/400", date:"منذ ساعتين" },
+            { id:5, title:"كاوكو", ep:"الحلقة 19", img:"https://picsum.photos/id/501/300/400", date:"اليوم" }
+        ]
+
+        // Sample news
+        const news = [
+            { title:"إعلان موسم ثاني من Solo Leveling", date:"10 أبريل 2026", desc:"سيصدر في يوليو القادم" },
+            { title:"One Piece يحطم الرقم القياسي", date:"9 أبريل 2026", desc:"أكثر من 2 مليار مشاهدة" },
+            { title:"Jujutsu Kaisen فيلم جديد قريباً", date:"8 أبريل 2026", desc:"تأكيد الاستوديو MAPPA" }
+        ]
+
+        // Render episodes
+        function renderEpisodes() {
+            const grid = document.getElementById('episodes-grid')
+            grid.innerHTML = episodes.map(ep => `
+                <div onclick="watchEpisode(${ep.id})" class="card-hover bg-zinc-900 rounded-3xl overflow-hidden cursor-pointer">
+                    <img src="${ep.img}" class="w-full h-80 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold">${ep.title}</h3>
+                        <p class="text-red-500">${ep.ep}</p>
+                        <p class="text-xs text-zinc-400">${ep.date}</p>
+                    </div>
+                </div>
+            `).join('')
+        }
+
+        // Render news
+        function renderNews() {
+            const grid = document.getElementById('news-grid')
+            grid.innerHTML = news.map(n => `
+                <div class="bg-zinc-800 rounded-3xl p-6 card-hover">
+                    <h3 class="text-2xl font-bold mb-2">${n.title}</h3>
+                    <p class="text-red-500 text-sm">${n.date}</p>
+                    <p class="mt-4">${n.desc}</p>
+                </div>
+            `).join('')
+        }
+
+        // Watch episode
+        function watchEpisode(id) {
+            const ep = episodes.find(e => e.id === id)
+            if (!ep) return
+            document.getElementById('modal-title').textContent = ep.title
+            document.getElementById('modal-ep').innerHTML = `\( {ep.ep} <span class="text-zinc-400 text-base">( \){ep.date})</span>`
+            document.getElementById('modal').classList.remove('hidden')
+            document.getElementById('modal').classList.add('flex')
+        }
+
+        function hideModal() {
+            const modal = document.getElementById('modal')
+            modal.classList.add('hidden')
+            modal.classList.remove('flex')
+        }
+
+        function watchRandom() {
+            const random = episodes[Math.floor(Math.random() * episodes.length)]
+            watchEpisode(random.id)
+        }
+
+        function fakeLogin() {
+            alert('تم تسجيل الدخول بنجاح (تجريبي)')
+        }
+
+        // Search filter
+        document.getElementById('search').addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase()
+            const filtered = episodes.filter(ep => 
+                ep.title.toLowerCase().includes(term) || ep.ep.toLowerCase().includes(term)
+            )
+            const grid = document.getElementById('episodes-grid')
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-zinc-400">لا توجد نتائج</div>`
+                return
+            }
+            grid.innerHTML = filtered.map(ep => `
+                <div onclick="watchEpisode(${ep.id})" class="card-hover bg-zinc-900 rounded-3xl overflow-hidden cursor-pointer">
+                    <img src="${ep.img}" class="w-full h-80 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold">${ep.title}</h3>
+                        <p class="text-red-500">${ep.ep}</p>
+                        <p class="text-xs text-zinc-400">${ep.date}</p>
+                    </div>
+                </div>
+            `).join('')
+        })
+
+        // Initialize
+        window.onload = () => {
+            initTailwind()
+            renderEpisodes()
+            renderNews()
+        }
+    </script>
+</body>
+</html>
